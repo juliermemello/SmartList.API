@@ -1,4 +1,5 @@
 ﻿using SmartList.Domain.Common;
+using System.Linq.Expressions;
 
 namespace SmartList.Domain.Interfaces.Repositories;
 
@@ -8,7 +9,7 @@ public interface IBaseRepository<T> where T : BaseEntity
 
     Task<T?> GetByIdAsync(int id);
 
-    Task<List<T>> GetAllAsync();
+    Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null);
 
     Task<T> AddAsync(T entity);
 

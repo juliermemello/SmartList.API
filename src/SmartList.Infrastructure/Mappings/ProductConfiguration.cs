@@ -32,6 +32,11 @@ internal class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.UpdatedAt)
             .HasDefaultValueSql("GETDATE()");
 
+        builder.HasOne(p => p.User)
+            .WithMany(u => u.Products)
+            .HasForeignKey(sl => sl.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
         builder.HasIndex(p => p.Name).HasDatabaseName("idx_products_name");
     }
 }

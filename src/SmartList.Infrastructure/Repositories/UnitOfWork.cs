@@ -1,5 +1,6 @@
 ﻿using Ardalis.GuardClauses.Net9;
 using Microsoft.EntityFrameworkCore.Storage;
+using SmartList.Domain.Common;
 using SmartList.Domain.Interfaces.Repositories;
 using SmartList.Infrastructure.Context;
 
@@ -9,6 +10,7 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
     private IDbContextTransaction? _currentTransaction;
+    private readonly Dictionary<string, object> _repositories = new();
 
     public IUserRepository Users { get; }
     public IProductRepository Products { get; }
@@ -30,12 +32,26 @@ public class UnitOfWork : IUnitOfWork
         ListItem = Guard.Against.Null(listItem, nameof(listItem));
     }
 
-    public async Task BeginTransactionAsync()
+    public IBaseRepository<T> Repository<T>() where T : BaseEntity
+    {
+        var type = typeof(T).Name;
+
+        if (!_repositories.ContainsKey(type))
+        {
+            var repositoryInstance = new BaseRepository<T>(_context);
+
+            _repositories.Add(type, repositoryInstance);
+        }
+
+        return (IBaseRepository<T>)_repositories[type];
+    }
+
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken)
     {
         _currentTransaction = await _context.Database.BeginTransactionAsync();
     }
 
-    public async Task<bool> CommitAsync()
+    public async Task<bool> CommitAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -48,7 +64,7 @@ public class UnitOfWork : IUnitOfWork
         }
         catch
         {
-            await RollbackAsync();
+            await RollbackAsync(cancellationToken);
 
             throw;
         }
@@ -58,7 +74,7 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
-    public async Task RollbackAsync()
+    public async Task RollbackAsync(CancellationToken cancellationToken)
     {
         if (_currentTransaction != null)
             await _currentTransaction.RollbackAsync();

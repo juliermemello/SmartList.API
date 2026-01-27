@@ -13,20 +13,14 @@ public static class GeneralConfiguration
         Guard.Against.Null(builder, nameof(builder));
 
         services.AddLog(builder);
-
         services.AddControllers();
-        
         services.AddEndpointsApiExplorer();
-
         services.AddInfrastructure(builder.Configuration);
-        
         services.AddApplication(builder.Configuration);
-
         services.AddSwaggerConfiguration();
-
         services.AddAPICors();
-
         services.AddHealthCheckConfiguration();
+        services.AddApiVersioning();
     }
 
     public static void AddGeneralApp(this IApplicationBuilder app)

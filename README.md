@@ -1,6 +1,6 @@
 # 🚀 SmartList Web API
 
-Esta é uma Web API robusta construída com **ASP.NET Core 8**, seguindo os princípios da **Clean Architecture** e as melhores práticas de mercado.
+Esta é uma Web API robusta construída com **ASP.NET Core 9**, seguindo os princípios da **Clean Architecture** e as melhores práticas de mercado.
 
 ## 🏗️ Estrutura do Projeto
 

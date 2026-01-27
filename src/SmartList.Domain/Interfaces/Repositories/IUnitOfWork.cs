@@ -1,4 +1,6 @@
-﻿namespace SmartList.Domain.Interfaces.Repositories;
+﻿using SmartList.Domain.Common;
+
+namespace SmartList.Domain.Interfaces.Repositories;
 
 public interface IUnitOfWork : IDisposable
 {
@@ -6,9 +8,11 @@ public interface IUnitOfWork : IDisposable
     IProductRepository Products { get; }
     IShoppingListRepository ShoppingList { get; }
 
-    Task BeginTransactionAsync();
+    IBaseRepository<T> Repository<T>() where T : BaseEntity;
 
-    Task<bool> CommitAsync();
+    Task BeginTransactionAsync(CancellationToken cancellationToken);
 
-    Task RollbackAsync();
+    Task<bool> CommitAsync(CancellationToken cancellationToken);
+
+    Task RollbackAsync(CancellationToken cancellationToken);
 }

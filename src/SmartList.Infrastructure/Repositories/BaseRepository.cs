@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SmartList.Domain.Common;
 using SmartList.Domain.Interfaces.Repositories;
 using SmartList.Infrastructure.Context;
+using System.Linq.Expressions;
 
 namespace SmartList.Infrastructure.Repositories;
 
@@ -14,6 +15,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     public BaseRepository(AppDbContext context)
     {
         _context = Guard.Against.Null(context, nameof(context));
+
         _dbSet = _context.Set<T>();
     }
 
@@ -32,6 +34,9 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 
         if (exist is not null)
         {
+            entity.CreatedAt = exist.CreatedAt;
+            entity.UpdatedAt = DateTime.Now;
+
             _context.Entry(exist).CurrentValues.SetValues(entity);
         }
 
@@ -40,13 +45,26 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 
     public virtual Task DeleteAsync(T entity)
     {
-        _dbSet.Remove(entity);
+        T? exist = _dbSet.Find(entity.Id);
+
+        if (exist is not null)
+        {
+            entity.Deleted = true;
+            entity.DeletedAt = DateTime.Now;
+
+            _context.Entry(exist).CurrentValues.SetValues(entity);
+        }
 
         return Task.CompletedTask;
     }
 
-    public virtual async Task<List<T>> GetAllAsync()
+    public virtual async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null)
     {
+        if (predicate is not null)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
+        }
+
         return await _dbSet.ToListAsync();
     }
 
