@@ -4,6 +4,7 @@ using FluentValidation;
 using SmartList.Application.Interfaces;
 using SmartList.Domain.Common;
 using SmartList.Domain.Interfaces.Repositories;
+using System.Linq.Expressions;
 
 namespace SmartList.Application.Services;
 
@@ -23,9 +24,9 @@ public class BaseService<TEntity, TRequest, TResponse> : IBaseService<TEntity, T
         _validator = Guard.Against.Null(validator, nameof(validator));
     }
 
-    public virtual async Task<IEnumerable<TResponse>> GetAllAsync()
+    public virtual async Task<IEnumerable<TResponse>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate = null)
     {
-        var entities = await _uow.Repository<TEntity>().GetAllAsync();
+        var entities = await _uow.Repository<TEntity>().GetAllAsync(predicate);
 
         return _mapper.Map<IEnumerable<TResponse>>(entities);
     }
@@ -62,7 +63,8 @@ public class BaseService<TEntity, TRequest, TResponse> : IBaseService<TEntity, T
 
         var entity = await _uow.Repository<TEntity>().GetByIdAsync(id);
 
-        if (entity == null) throw new Exception("Registro não encontrado.");
+        if (entity == null) 
+            throw new Exception("Registro não encontrado.");
 
         _mapper.Map(request, entity);
 

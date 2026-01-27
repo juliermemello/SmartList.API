@@ -13,5 +13,11 @@ public class UserMappingProfile : Profile
             .ForMember(dest => dest.TotalProducts, opt => opt.MapFrom(src => src.Products.Count));
 
         CreateMap<UserCreateRequest, User>();
+
+        CreateMap<UserUpdateRequest, User>()
+            .ReverseMap();
+
+        CreateMap<UserUpdateRequest, UserCreateRequest>()
+            .ReverseMap();
     }
 }

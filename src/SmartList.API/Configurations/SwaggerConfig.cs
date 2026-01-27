@@ -26,7 +26,7 @@ public static class SwaggerConfig
 
             s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Description = "Insira o token JWT desta maneira: Bearer {seu_token}",
+                Description = "Digite apenas o seu token JWT:",
                 Name = "Authorization",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
@@ -43,6 +43,8 @@ public static class SwaggerConfig
                     Array.Empty<string>()
                 }
             });
+
+            s.EnableAnnotations();
 
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);

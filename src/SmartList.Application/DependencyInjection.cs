@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SmartList.Application.Interfaces;
 using SmartList.Application.Mappings;
 using SmartList.Application.Services;
-using SmartList.Domain.Security;
+using SmartList.Domain.Models;
 using System.Reflection;
 
 namespace SmartList.Application;
@@ -43,7 +43,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<Argon2Settings>(options =>
+        services.Configure<SecuritySettings>(options =>
         {
             configuration.GetSection("SecuritySettings:Argon2").Bind(options);
         });
@@ -52,6 +52,7 @@ public static class DependencyInjection
 
         services.AddSingleton<IPasswordHasher, PasswordHasherService>();
 
+        services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserService, UserService>();
 
         return services;

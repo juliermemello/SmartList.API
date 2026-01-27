@@ -1,5 +1,6 @@
 ﻿using Ardalis.GuardClauses.Net9;
 using FluentValidation;
+using SmartList.Domain.Models;
 using System.Net;
 
 namespace SmartList.API.Middleware;
@@ -31,6 +32,12 @@ public class ExceptionMiddleware
         {
             await HandleValidationExceptionAsync(context, ex);
         }
+        catch (UnauthorizedAccessException ex)
+        {
+            _logger.LogError(ex, "{Message}", ex.Message);
+
+            await HandleSecurityExceptionAsync(context, ex);
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "{Message}", ex.Message);
@@ -51,7 +58,7 @@ public class ExceptionMiddleware
                 g => g.Select(x => x.ErrorMessage).ToArray()
             );
 
-        var response = new
+        var response = new ErrorResponse
         {
             Status = context.Response.StatusCode,
             Message = "Um ou mais erros de validação ocorreram.",
@@ -66,11 +73,24 @@ public class ExceptionMiddleware
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-        return context.Response.WriteAsJsonAsync(new
+        return context.Response.WriteAsJsonAsync(new ErrorResponse
         {
             Status = context.Response.StatusCode,
             Message = "Erro interno no servidor.",
-            Detail = "Consulte os logs para mais informações."
+            Details = "Consulte os logs para mais informações."
+        });
+    }
+
+    private static Task HandleSecurityExceptionAsync(HttpContext context, Exception ex)
+    {
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+
+        return context.Response.WriteAsJsonAsync(new ErrorResponse
+        {
+            Status = context.Response.StatusCode,
+            Message = ex.Message,
+            Details = "Consulte os logs para mais informações."
         });
     }
 }

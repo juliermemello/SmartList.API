@@ -1,6 +1,6 @@
-﻿namespace SmartList.Domain.Security;
+﻿namespace SmartList.Domain.Models;
 
-public class Argon2Settings
+public class SecuritySettings
 {
     public int SaltSize { get; set; }
     public int HashSize { get; set; }

@@ -1,7 +1,7 @@
 ﻿using Konscious.Security.Cryptography;
 using Microsoft.Extensions.Options;
 using SmartList.Application.Interfaces;
-using SmartList.Domain.Security;
+using SmartList.Domain.Models;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -9,9 +9,9 @@ namespace SmartList.Application.Services;
 
 public class PasswordHasherService : IPasswordHasher
 {
-    private readonly Argon2Settings _settings;
+    private readonly SecuritySettings _settings;
 
-    public PasswordHasherService(IOptions<Argon2Settings> settings)
+    public PasswordHasherService(IOptions<SecuritySettings> settings)
     {
         _settings = settings.Value;
     }

@@ -1,4 +1,5 @@
 ﻿using SmartList.Domain.Common;
+using System.Linq.Expressions;
 
 namespace SmartList.Application.Interfaces;
 
@@ -7,7 +8,7 @@ public interface IBaseService<TEntity, TRequest, TResponse>
     where TRequest : class
     where TResponse : class
 {
-    Task<IEnumerable<TResponse>> GetAllAsync();
+    Task<IEnumerable<TResponse>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate = null);
 
     Task<TResponse?> GetByIdAsync(int id);
     

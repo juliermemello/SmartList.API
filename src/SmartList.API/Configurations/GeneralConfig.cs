@@ -1,5 +1,4 @@
 ﻿using Ardalis.GuardClauses.Net9;
-using Serilog;
 using SmartList.Application;
 using SmartList.Infrastructure;
 
@@ -18,22 +17,13 @@ public static class GeneralConfiguration
         services.AddInfrastructure(builder.Configuration);
         services.AddApplication(builder.Configuration);
         services.AddSwaggerConfiguration();
+        services.AddJWTConfiguration(builder.Configuration);
         services.AddAPICors();
         services.AddHealthCheckConfiguration();
         services.AddApiVersioning();
-    }
-
-    public static void AddGeneralApp(this IApplicationBuilder app)
-    {
-        Guard.Against.Null(app, nameof(app));
-
-        app.UseSerilogRequestLogging();
-        app.AddAPICors();
-        app.AddSwagger();
-        app.AddAPIMiddleware();
-        app.UseAuthentication();
-        app.UseAuthorization();
-        app.UseRouting();
-        app.AddHealthCheck();
+        services.AddRouting(options => {
+            options.LowercaseUrls = true;
+            options.LowercaseQueryStrings = true;
+        });
     }
 }
