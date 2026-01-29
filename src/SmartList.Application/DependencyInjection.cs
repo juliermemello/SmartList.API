@@ -29,6 +29,7 @@ public static class DependencyInjection
         services.AddAutoMapper(cfg =>
         {
             cfg.AddMaps(typeof(UserMappingProfile).Assembly);
+            cfg.AddMaps(typeof(CategoryMappingProfile).Assembly);
         });
 
         return services;
@@ -48,12 +49,12 @@ public static class DependencyInjection
             configuration.GetSection("SecuritySettings:Argon2").Bind(options);
         });
 
-        services.AddScoped(typeof(IBaseService<,,>), typeof(BaseService<,,>));
-
         services.AddSingleton<IPasswordHasher, PasswordHasherService>();
 
+        services.AddScoped(typeof(IBaseService<,,>), typeof(BaseService<,,>));
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ICategoryService, CategoryService>();
 
         return services;
     }

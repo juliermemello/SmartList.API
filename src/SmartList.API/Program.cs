@@ -12,7 +12,6 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-//app.AddGeneralApp();
 app.UseSerilogRequestLogging();
 app.AddAPICors();
 app.AddSwagger();

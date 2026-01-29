@@ -6,11 +6,11 @@ Esta é uma Web API robusta construída com **ASP.NET Core 9**, seguindo os prin
 
 O projeto está organizado da seguinte forma:
 
-* **src/SmartList.Domain**: Contém as entidades, interfaces de repositórios e regras de negócio puras.
-* **src/SmartList.Application**: Contém os casos de uso, DTOs, Mapeamentos e Validações (FluentValidation).
-* **src/SmartList.Infrastructure**: Implementação do Entity Framework, Repositórios e integrações externas.
 * **src/SmartList.API**: Ponto de entrada da aplicação, Controllers, Middlewares e configurações de Segurança (JWT).
-* **tests/SmartList.Tests**: Testes unitários utilizando xUnit e Moq.
+* **src/SmartList.Application**: Contém os casos de uso, DTOs, Mapeamentos e Validações (FluentValidation).
+* **src/SmartList.Domain**: Contém as entidades, interfaces de repositórios e regras de negócio puras.
+* **src/SmartList.Infrastructure**: Implementação do Entity Framework, Repositórios e integrações externas.
+
 
 ---
 

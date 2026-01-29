@@ -2,8 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SmartList.Domain.Interfaces;
 using SmartList.Domain.Interfaces.Repositories;
 using SmartList.Infrastructure.Context;
+using SmartList.Infrastructure.Persistence;
+using SmartList.Infrastructure.Persistence.Interceptors;
 using SmartList.Infrastructure.Repositories;
 
 namespace SmartList.Infrastructure;
@@ -27,7 +30,8 @@ public static class DependencyInjection
 
         services.AddDbContext<AppDbContext>((serviceProvider, options) =>
         {
-            options.UseSqlServer(connectionString);
+            options.UseSqlServer(connectionString)
+                .AddInterceptors(new SoftDeleteInterceptor());
         });
 
         return services;
@@ -36,12 +40,15 @@ public static class DependencyInjection
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IShoppingListRepository, ShoppingListRepository>();
         services.AddScoped<IListItemRepository, ListItemRepository>();
 
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        services.AddScoped<IUserSession, UserSession>();
 
         return services;
     }

@@ -75,14 +75,15 @@ public class BaseService<TEntity, TRequest, TResponse> : IBaseService<TEntity, T
         return _mapper.Map<TResponse>(entity);
     }
 
-    public virtual async Task<bool> RemoveAsync(int id)
+    public virtual async Task<TResponse> RemoveAsync(int id)
     {
         var entity = await _uow.Repository<TEntity>().GetByIdAsync(id);
 
-        if (entity == null) return false;
+        if (entity == null)
+            throw new Exception("Registro não encontrado.");
 
         await _uow.Repository<TEntity>().DeleteAsync(entity);
 
-        return await _uow.CommitAsync(default);
+        return _mapper.Map<TResponse>(entity);
     }
 }

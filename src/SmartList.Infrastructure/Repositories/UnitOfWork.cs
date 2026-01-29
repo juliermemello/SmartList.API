@@ -9,10 +9,11 @@ namespace SmartList.Infrastructure.Repositories;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
-    private IDbContextTransaction? _currentTransaction;
     private readonly Dictionary<string, object> _repositories = new();
-
+    private IDbContextTransaction? _currentTransaction;
+    
     public IUserRepository Users { get; }
+    public ICategoryRepository Categories { get; }
     public IProductRepository Products { get; }
     public IShoppingListRepository ShoppingList { get; }
     public IListItemRepository ListItem { get; }
@@ -20,6 +21,7 @@ public class UnitOfWork : IUnitOfWork
     public UnitOfWork(
         AppDbContext context,
         IUserRepository users,
+        ICategoryRepository categories,
         IProductRepository products,
         IShoppingListRepository shoppingList,
         IListItemRepository listItem)
@@ -27,6 +29,7 @@ public class UnitOfWork : IUnitOfWork
         _context = Guard.Against.Null(context, nameof(context));
 
         Users = Guard.Against.Null(users, nameof(users));
+        Categories = Guard.Against.Null(categories, nameof(categories));
         Products = Guard.Against.Null(products, nameof(products));
         ShoppingList = Guard.Against.Null(shoppingList, nameof(shoppingList));
         ListItem = Guard.Against.Null(listItem, nameof(listItem));

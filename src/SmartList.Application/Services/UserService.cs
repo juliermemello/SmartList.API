@@ -1,13 +1,16 @@
 ﻿using Ardalis.GuardClauses.Net9;
 using AutoMapper;
 using FluentValidation;
+using LinqKit;
 using SmartList.Application.DTOs.ChangePassword;
 using SmartList.Application.DTOs.Login;
 using SmartList.Application.DTOs.User;
 using SmartList.Application.Interfaces;
+using SmartList.Domain.Constants;
 using SmartList.Domain.Entity;
 using SmartList.Domain.Enums;
 using SmartList.Domain.Interfaces.Repositories;
+using System.Linq.Expressions;
 
 namespace SmartList.Application.Services;
 
@@ -49,6 +52,12 @@ public class UserService : BaseService<User, UserCreateRequest, UserResponse>, I
         entity.Role = UserRole.User.ToString();
         entity.Password = _passwordHasher.Hash(request.Password);
 
+        entity.Categories = DefaultData.Categories.Select(name => new Category
+        {
+            Name = name,
+            Deleted = false
+        }).ToList();
+
         await _uow.Users.AddAsync(entity);
         await _uow.CommitAsync(default);
 
@@ -72,7 +81,6 @@ public class UserService : BaseService<User, UserCreateRequest, UserResponse>, I
         entity.Role = UserRole.User.ToString();
 
         await _uow.Repository<User>().UpdateAsync(entity);
-
         await _uow.CommitAsync(default);
 
         return _mapper.Map<UserResponse>(entity);
@@ -136,5 +144,24 @@ public class UserService : BaseService<User, UserCreateRequest, UserResponse>, I
             Username = userEntity.Username,
             PasswordChanged = success
         };
+    }
+
+    public Expression<Func<User, bool>>? GetDynamicFilter(UserFilterRequest? request)
+    {
+        if (request == null)
+            return null;
+
+        var predicate = PredicateBuilder.New<User>(true);
+
+        if (!string.IsNullOrEmpty(request.Name))
+            predicate = predicate.And(p => p.Name.Contains(request.Name));
+
+        if (!string.IsNullOrEmpty(request.Username))
+            predicate = predicate.And(p => p.Username.Contains(request.Username));
+
+        if (!string.IsNullOrEmpty(request.Email))
+            predicate = predicate.And(p => p.Email.Contains(request.Email));
+
+        return predicate;
     }
 }

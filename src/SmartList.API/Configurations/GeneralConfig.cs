@@ -12,10 +12,10 @@ public static class GeneralConfiguration
         Guard.Against.Null(builder, nameof(builder));
 
         services.AddLog(builder);
-        services.AddControllers();
-        services.AddEndpointsApiExplorer();
         services.AddInfrastructure(builder.Configuration);
         services.AddApplication(builder.Configuration);
+        services.AddControllers();
+        services.AddEndpointsApiExplorer();
         services.AddSwaggerConfiguration();
         services.AddJWTConfiguration(builder.Configuration);
         services.AddAPICors();
@@ -25,5 +25,6 @@ public static class GeneralConfiguration
             options.LowercaseUrls = true;
             options.LowercaseQueryStrings = true;
         });
+        services.AddHttpContextAccessor();
     }
 }

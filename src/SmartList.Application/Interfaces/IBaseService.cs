@@ -16,5 +16,5 @@ public interface IBaseService<TEntity, TRequest, TResponse>
     
     Task<TResponse> UpdateAsync(int id, TRequest request);
     
-    Task<bool> RemoveAsync(int id);
+    Task<TResponse> RemoveAsync(int id);
 }

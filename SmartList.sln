@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36908.2 d17.14
+VisualStudioVersion = 17.14.36908.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartList.API", "src\SmartList.API\SmartList.API.csproj", "{54F9A3B9-F1FF-450A-A468-255CD3D84BB8}"
 EndProject
@@ -12,6 +12,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartList.Application", "src\SmartList.Application\SmartList.Application.csproj", "{E1565C95-5FF2-43A0-B204-56D828215FBC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartList.Infrastructure", "src\SmartList.Infrastructure\SmartList.Infrastructure.csproj", "{31507A15-5ADF-439C-AEC3-3B1FB5011875}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution items", "{B9867868-AB1A-448B-B372-97E3A0F94FBD}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

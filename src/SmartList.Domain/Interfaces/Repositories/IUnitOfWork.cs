@@ -5,6 +5,7 @@ namespace SmartList.Domain.Interfaces.Repositories;
 public interface IUnitOfWork : IDisposable
 {
     IUserRepository Users { get; }
+    ICategoryRepository Categories { get; }
     IProductRepository Products { get; }
     IShoppingListRepository ShoppingList { get; }
 

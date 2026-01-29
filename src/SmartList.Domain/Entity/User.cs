@@ -11,5 +11,6 @@ public class User : BaseEntity
     public string Role { get; set; } = string.Empty;
     public bool Active { get; set; } = true;
     public List<ShoppingList> Lists { get; set; } = new List<ShoppingList>();
+    public List<Category> Categories { get; set; } = new List<Category>();
     public List<Product> Products { get; set; } = new List<Product>();
 }

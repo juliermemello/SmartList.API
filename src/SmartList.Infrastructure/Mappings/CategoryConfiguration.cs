@@ -4,11 +4,11 @@ using SmartList.Domain.Entity;
 
 namespace SmartList.Infrastructure.Mappings;
 
-internal class ProductConfiguration : IEntityTypeConfiguration<Product>
+public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
-    public void Configure(EntityTypeBuilder<Product> builder)
+    public void Configure(EntityTypeBuilder<Category> builder)
     {
-        builder.ToTable("products");
+        builder.ToTable("categories");
 
         builder.HasKey(p => p.Id);
 
@@ -20,13 +20,8 @@ internal class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasMaxLength(100)
             .IsRequired();
 
-        builder.HasOne(p => p.Category)
-            .WithMany(u => u.Products)
-            .HasForeignKey(sl => sl.CategoryId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder.Property(p => p.DefaultEan)
-            .HasMaxLength(255);
+        builder.Property(p => p.Icon)
+            .HasMaxLength(100);
 
         builder.Property(p => p.CreatedAt)
             .HasDefaultValueSql("GETDATE()");
@@ -35,10 +30,10 @@ internal class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasDefaultValueSql("GETDATE()");
 
         builder.HasOne(p => p.User)
-            .WithMany(u => u.Products)
+            .WithMany(u => u.Categories)
             .HasForeignKey(sl => sl.UserId)
             .OnDelete(DeleteBehavior.NoAction);
 
-        builder.HasIndex(p => p.Name).HasDatabaseName("idx_products_name");
+        builder.HasIndex(p => p.Name).HasDatabaseName("idx_categories_name");
     }
 }
