@@ -30,6 +30,7 @@ public static class DependencyInjection
         {
             cfg.AddMaps(typeof(UserMappingProfile).Assembly);
             cfg.AddMaps(typeof(CategoryMappingProfile).Assembly);
+            cfg.AddMaps(typeof(ProductMappingProfile).Assembly);
         });
 
         return services;
@@ -51,10 +52,11 @@ public static class DependencyInjection
 
         services.AddSingleton<IPasswordHasher, PasswordHasherService>();
 
-        services.AddScoped(typeof(IBaseService<,,>), typeof(BaseService<,,>));
+        services.AddScoped(typeof(IBaseService<,,,>), typeof(BaseService<,,,>));
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<IProductService, ProductService>();
 
         return services;
     }

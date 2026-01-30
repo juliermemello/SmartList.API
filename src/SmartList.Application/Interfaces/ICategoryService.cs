@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace SmartList.Application.Interfaces;
 
-public interface ICategoryService : IBaseService<Category, CategoryCreateRequest, CategoryResponse>
+public interface ICategoryService : IBaseService<Category, CategoryCreateRequest, CategoryUpdateRequest, CategoryResponse>
 {
     Expression<Func<Category, bool>>? GetDynamicFilter(CategoryFilterRequest? request);
 }

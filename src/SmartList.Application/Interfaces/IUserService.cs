@@ -6,9 +6,8 @@ using System.Linq.Expressions;
 
 namespace SmartList.Application.Interfaces;
 
-public interface IUserService : IBaseService<User, UserCreateRequest, UserResponse>
+public interface IUserService : IBaseService<User, UserCreateRequest, UserUpdateRequest, UserResponse>
 {
-    Task<UserResponse> UpdateAsync(UserUpdateRequest request);
     Task<LoginResponse> AuthenticateAsync(LoginRequest request);
     Task<ChangePasswordResponse> ChangePasswordAsync(ChangePasswordRequest request);
     Expression<Func<User, bool>>? GetDynamicFilter(UserFilterRequest? request);

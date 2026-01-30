@@ -8,20 +8,27 @@ using System.Linq.Expressions;
 
 namespace SmartList.Application.Services;
 
-public class BaseService<TEntity, TRequest, TResponse> : IBaseService<TEntity, TRequest, TResponse>
+public class BaseService<TEntity, TRequest, TUpdateRequest, TResponse> : IBaseService<TEntity, TRequest, TUpdateRequest, TResponse>
     where TEntity : BaseEntity
     where TRequest : class
+    where TUpdateRequest : class
     where TResponse : class
 {
     protected readonly IUnitOfWork _uow;
     protected readonly IMapper _mapper;
     protected readonly IValidator<TRequest> _validator;
+    protected readonly IValidator<TUpdateRequest> _updateValidator;
 
-    protected BaseService(IUnitOfWork uow, IMapper mapper, IValidator<TRequest> validator)
+    protected BaseService(
+        IUnitOfWork uow,
+        IMapper mapper,
+        IValidator<TRequest> validator,
+        IValidator<TUpdateRequest> updateValidator)
     {
         _uow = Guard.Against.Null(uow, nameof(uow));
         _mapper = Guard.Against.Null(mapper, nameof(mapper));
         _validator = Guard.Against.Null(validator, nameof(validator));
+        _updateValidator = Guard.Against.Null(updateValidator, nameof(updateValidator));
     }
 
     public virtual async Task<IEnumerable<TResponse>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate = null)
@@ -54,9 +61,9 @@ public class BaseService<TEntity, TRequest, TResponse> : IBaseService<TEntity, T
         return _mapper.Map<TResponse>(entity);
     }
 
-    public virtual async Task<TResponse> UpdateAsync(int id, TRequest request)
+    public virtual async Task<TResponse> UpdateAsync(int id, TUpdateRequest request)
     {
-        var validationResult = await _validator.ValidateAsync(request);
+        var validationResult = await _updateValidator.ValidateAsync(request);
 
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);

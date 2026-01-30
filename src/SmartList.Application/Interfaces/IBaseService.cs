@@ -3,9 +3,10 @@ using System.Linq.Expressions;
 
 namespace SmartList.Application.Interfaces;
 
-public interface IBaseService<TEntity, TRequest, TResponse>
+public interface IBaseService<TEntity, TRequest, TUpdateRequest, TResponse>
     where TEntity : BaseEntity
     where TRequest : class
+    where TUpdateRequest: class
     where TResponse : class
 {
     Task<IEnumerable<TResponse>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate = null);
@@ -14,7 +15,7 @@ public interface IBaseService<TEntity, TRequest, TResponse>
     
     Task<TResponse> AddAsync(TRequest request);
     
-    Task<TResponse> UpdateAsync(int id, TRequest request);
+    Task<TResponse> UpdateAsync(int id, TUpdateRequest request);
     
     Task<TResponse> RemoveAsync(int id);
 }

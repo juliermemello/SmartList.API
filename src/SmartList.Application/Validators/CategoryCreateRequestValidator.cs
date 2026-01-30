@@ -17,9 +17,6 @@ public class CategoryCreateRequestValidator : AbstractValidator<CategoryCreateRe
             .NotEmpty().WithMessage("O nome é obrigatório.")
             .Length(3, 100).WithMessage("O nome deve ter entre 3 e 100 caracteres.")
             .MustAsync(BeUniqueName).WithMessage("Já existe uma categoria com este nome.");
-
-        RuleFor(x => x.Icon)
-            .Length(3, 100).WithMessage("O ícone deve ter entre 3 e 100 caracteres.");
     }
 
     private async Task<bool> BeUniqueName(string name, CancellationToken cancellationToken)

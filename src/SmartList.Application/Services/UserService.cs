@@ -14,13 +14,12 @@ using System.Linq.Expressions;
 
 namespace SmartList.Application.Services;
 
-public class UserService : BaseService<User, UserCreateRequest, UserResponse>, IUserService
+public class UserService : BaseService<User, UserCreateRequest, UserUpdateRequest, UserResponse>, IUserService
 {
     private readonly IPasswordHasher _passwordHasher;
     private readonly IValidator<LoginRequest> _loginValidator;
     private readonly ITokenService _tokenService;
     private readonly IValidator<ChangePasswordRequest> _changePasswordValidator;
-    private readonly IValidator<UserUpdateRequest> _userUpdateRequestValidator;
 
     public UserService(
         IUnitOfWork uow,
@@ -30,14 +29,13 @@ public class UserService : BaseService<User, UserCreateRequest, UserResponse>, I
         IValidator<LoginRequest> loginValidator,
         ITokenService tokenService,
         IValidator<ChangePasswordRequest> changePasswordValidator,
-        IValidator<UserUpdateRequest> userUpdateRequestValidator)
-        : base(uow, mapper, validator)
+        IValidator<UserUpdateRequest> updateValidator)
+        : base(uow, mapper, validator, updateValidator)
     {
         _passwordHasher = Guard.Against.Null(passwordHasher, nameof(passwordHasher));
         _loginValidator = Guard.Against.Null(loginValidator, nameof(loginValidator));
         _tokenService = Guard.Against.Null(tokenService, nameof(tokenService));
         _changePasswordValidator = Guard.Against.Null(changePasswordValidator, nameof(changePasswordValidator));
-        _userUpdateRequestValidator = Guard.Against.Null(userUpdateRequestValidator, nameof(userUpdateRequestValidator));
     }
 
     public override async Task<UserResponse> AddAsync(UserCreateRequest request)
@@ -59,28 +57,6 @@ public class UserService : BaseService<User, UserCreateRequest, UserResponse>, I
         }).ToList();
 
         await _uow.Users.AddAsync(entity);
-        await _uow.CommitAsync(default);
-
-        return _mapper.Map<UserResponse>(entity);
-    }
-
-    public async Task<UserResponse> UpdateAsync(UserUpdateRequest request)
-    {
-        var validationResult = await _userUpdateRequestValidator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
-            throw new ValidationException(validationResult.Errors);
-
-        var entity = await _uow.Repository<User>().GetByIdAsync(request.Id);
-
-        if (entity == null) 
-            throw new Exception("Registro não encontrado.");
-
-        _mapper.Map(request, entity);
-
-        entity.Role = UserRole.User.ToString();
-
-        await _uow.Repository<User>().UpdateAsync(entity);
         await _uow.CommitAsync(default);
 
         return _mapper.Map<UserResponse>(entity);

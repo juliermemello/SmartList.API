@@ -8,7 +8,8 @@ public class CategoryMappingProfile : Profile
 {
     public CategoryMappingProfile()
     {
-        CreateMap<Category, CategoryResponse>();
+        CreateMap<Category, CategoryResponse>()
+            .ForMember(dest => dest.TotalProducts, opt => opt.MapFrom(src => src.Products.Count));
 
         CreateMap<CategoryCreateRequest, Category>();
 

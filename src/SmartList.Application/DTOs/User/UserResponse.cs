@@ -10,4 +10,6 @@ public class UserResponse
     public bool Active { get; init; }
     public int TotalLists { get; init; }
     public int TotalProducts { get; init; }
+    public DateTime? CreatedAt { get; init; } = null;
+    public DateTime? UpdatedAt { get; init; } = null;
 }

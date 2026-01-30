@@ -3,7 +3,6 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartList.Application.DTOs.ChangePassword;
-using SmartList.Application.DTOs.Login;
 using SmartList.Application.DTOs.User;
 using SmartList.Application.Interfaces;
 using SmartList.Domain.Models;
@@ -22,7 +21,7 @@ public class UsersController : BaseController
     }
 
     [AllowAnonymous]
-    [HttpPost("register")]
+    [HttpPost]
     [SwaggerOperation(
         Summary = "Cria um novo usuário no sistema com as informações fornecidas.",
         Description = "Cria um novo usuário no sistema. Este endpoint é público e não requer autenticação. Recebe os dados básicos do usuário, valida as informações enviadas e registra o usuário na base de dados. Retorna os detalhes do usuário criado ou mensagens de erro de validação caso os dados fornecidos sejam inválidos.",
@@ -38,26 +37,6 @@ public class UsersController : BaseController
         var result = await _userService.AddAsync(request);
 
         return CreatedAtAction(nameof(Register), new { id = result.Id }, result);
-    }
-
-    [AllowAnonymous]
-    [HttpPost("login")]
-    [SwaggerOperation(
-        Summary = "Autentica um usuário e gera um token de acesso.",
-        Description = "Realiza a autenticação do usuário utilizando credenciais (e-mail e senha). Se as credenciais forem válidas, o sistema retorna um token JWT para acesso a recursos protegidos e informações básicas do perfil.",
-        OperationId = "UsersLogin",
-        Tags = ["Users"]
-    )]
-    [SwaggerResponse(200, "Usuário autenticado com sucesso.", typeof(LoginResponse))]
-    [SwaggerResponse(400, "Não foi possível autenticar o usuário ou contém informações incorretas.", typeof(ErrorResponse))]
-    [SwaggerResponse(401, "Não foi possível autenticar o usuário.", typeof(ErrorResponse))]
-    public async Task<IActionResult> Login(
-        [FromBody, SwaggerRequestBody("Dados para autenticação de um usuário.", Required = true)] LoginRequest request
-    )
-    {
-        var result = await _userService.AuthenticateAsync(request);
-
-        return CreatedAtAction(nameof(Login), new { id = result.Username }, result);
     }
 
     [AllowAnonymous]
@@ -80,7 +59,7 @@ public class UsersController : BaseController
         return CreatedAtAction(nameof(ChangePassword), result);
     }
 
-    [HttpPut("update")]
+    [HttpPut("{id:int}")]
     [SwaggerOperation(
         Summary = "Atualiza os dados de perfil do usuário.",
         Description = "Permite a modificação de informações cadastrais como nome e nome de usuário. O sistema valida se o novo username já está em uso antes de persistir as alterações.",
@@ -90,16 +69,17 @@ public class UsersController : BaseController
     [SwaggerResponse(200, "Usuário atualizado com sucesso.", typeof(UserResponse))]
     [SwaggerResponse(400, "Não foi possível alterar o usuário ou contém informações incorretas.", typeof(ErrorResponse))]
     public async Task<IActionResult> Update(
+        [FromRoute, SwaggerParameter("Id do usuário que será atualizado.", Required = true)] int id,
         [FromBody, SwaggerRequestBody("Dados para alteração de um novo usuário.", Required = true)] UserUpdateRequest request
     )
     {
-        var result = await _userService.UpdateAsync(request);
+        var result = await _userService.UpdateAsync(id, request);
 
         return CreatedAtAction(nameof(Update), new { id = result.Id }, result);
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpDelete("remove")]
+    [HttpDelete("{id:int}")]
     [SwaggerOperation(
         Summary = "Remove a conta do usuário.",
         Description = "Realiza a exclusão de uma conta do usuário. Dependendo da política de retenção, os dados podem ser anonimizados ou removidos permanentemente. Esta operação é irreversível.",
@@ -109,7 +89,7 @@ public class UsersController : BaseController
     [SwaggerResponse(200, "Usuário excluído com sucesso.", typeof(UserResponse))]
     [SwaggerResponse(400, "Não foi possível excluir o usuário.", typeof(ErrorResponse))]
     public async Task<IActionResult> Remove(
-        [FromQuery, SwaggerParameter("Id do usuário que será excluído.", Required = true)] int id
+        [FromRoute, SwaggerParameter("Id do usuário que será excluído.", Required = true)] int id
     )
     {
         var result = await _userService.RemoveAsync(id);
@@ -118,7 +98,7 @@ public class UsersController : BaseController
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpGet("list")]
+    [HttpGet]
     [SwaggerOperation(
         Summary = "Lista todos os registros de usuários.",
         Description = "Lista todos os registros de usuários.",
