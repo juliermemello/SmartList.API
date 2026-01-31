@@ -1,4 +1,6 @@
 ﻿using Ardalis.GuardClauses.Net9;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using SmartList.Domain.Common;
 using SmartList.Domain.Interfaces.Repositories;
@@ -11,10 +13,12 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 {
     protected readonly AppDbContext _context;
     protected readonly DbSet<T> _dbSet;
+    protected IMapper _mapper;
 
-    public BaseRepository(AppDbContext context)
+    public BaseRepository(AppDbContext context, IMapper mapper)
     {
         _context = Guard.Against.Null(context, nameof(context));
+        _mapper = Guard.Against.Null(mapper, nameof(mapper));
 
         _dbSet = _context.Set<T>();
     }
@@ -60,16 +64,22 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 
     public virtual async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null)
     {
-        if (predicate is not null)
-        {
-            return await _dbSet.Where(predicate).ToListAsync();
-        }
+        var query = _dbSet
+            .AsNoTracking()
+            .ProjectTo<T>(_mapper.ConfigurationProvider);
 
-        return await _dbSet.ToListAsync();
+        if (predicate is not null)
+            query = query.Where(predicate);
+
+        return await query
+            .ToListAsync();
     }
 
     public virtual async Task<T?> GetByIdAsync(int id)
     {
-        return await _dbSet.FindAsync(id);
+        return await _dbSet
+            .AsNoTracking()
+            .ProjectTo<T>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync<T>(x => x.Id == id);
     }
 }

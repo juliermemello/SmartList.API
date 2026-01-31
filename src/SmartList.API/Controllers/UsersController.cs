@@ -129,7 +129,7 @@ public class UsersController : BaseController
     [SwaggerResponse(200, "Usuário encontrado e retornado com sucesso.", typeof(UserResponse))]
     [SwaggerResponse(404, "Usuário não encontrado ou o ID fornecido é inválido.", typeof(ErrorResponse))]
     public async Task<IActionResult> GetById(
-        [FromQuery, SwaggerParameter("ID único de identificação de um usuário.", Required = true)] int id
+        [FromRoute, SwaggerParameter("ID único de identificação de um usuário.", Required = true)] int id
     )
     {
         var result = await _userService.GetByIdAsync(id);

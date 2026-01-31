@@ -6,7 +6,7 @@ public record ProductResponse
     public string Name { get; init; } = string.Empty;
     public string DefaultEan { get; init; } = string.Empty;
     public int CategoryId { get; init; } = 0;
-    public string Category { get; init; } = string.Empty;
+    public string CategoryName { get; init; } = string.Empty;
     public DateTime? CreatedAt { get; init; } = null;
     public DateTime? UpdatedAt { get; init; } = null;
 }

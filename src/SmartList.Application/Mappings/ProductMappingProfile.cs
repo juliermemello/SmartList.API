@@ -7,7 +7,13 @@ public class ProductMappingProfile : Profile
 {
     public ProductMappingProfile()
     {
-        CreateMap<Product, ProductResponse>();
+        CreateMap<Product, Product>();
+
+        CreateMap<Product, ProductResponse>()
+            .ForMember(
+                dest => dest.CategoryName,
+                opt => opt.MapFrom(src => src.Category != null ? src.Category.Name ?? string.Empty : string.Empty)
+            );
 
         CreateMap<ProductCreateRequest, Product>();
 

@@ -1,4 +1,5 @@
 ﻿using Ardalis.GuardClauses.Net9;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore.Storage;
 using SmartList.Domain.Common;
 using SmartList.Domain.Interfaces.Repositories;
@@ -11,7 +12,8 @@ public class UnitOfWork : IUnitOfWork
     private readonly AppDbContext _context;
     private readonly Dictionary<string, object> _repositories = new();
     private IDbContextTransaction? _currentTransaction;
-    
+    private IMapper _mapper;
+
     public IUserRepository Users { get; }
     public ICategoryRepository Categories { get; }
     public IProductRepository Products { get; }
@@ -24,9 +26,11 @@ public class UnitOfWork : IUnitOfWork
         ICategoryRepository categories,
         IProductRepository products,
         IShoppingListRepository shoppingList,
-        IListItemRepository listItem)
+        IListItemRepository listItem,
+        IMapper mapper)
     {
         _context = Guard.Against.Null(context, nameof(context));
+        _mapper = Guard.Against.Null(mapper, nameof(mapper));
 
         Users = Guard.Against.Null(users, nameof(users));
         Categories = Guard.Against.Null(categories, nameof(categories));
@@ -41,7 +45,7 @@ public class UnitOfWork : IUnitOfWork
 
         if (!_repositories.ContainsKey(type))
         {
-            var repositoryInstance = new BaseRepository<T>(_context);
+            var repositoryInstance = new BaseRepository<T>(_context, _mapper);
 
             _repositories.Add(type, repositoryInstance);
         }

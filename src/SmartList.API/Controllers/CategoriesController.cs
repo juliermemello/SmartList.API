@@ -106,7 +106,7 @@ public class CategoriesController : BaseController
     [SwaggerResponse(200, "Categoria encontrada e retornada com sucesso.", typeof(CategoryResponse))]
     [SwaggerResponse(404, "Categoria não encontrada ou o Id fornecido é inválido.", typeof(ErrorResponse))]
     public async Task<IActionResult> GetById(
-        [FromQuery, SwaggerParameter("Id único de identificação de uma categoria.", Required = true)] int id
+        [FromRoute, SwaggerParameter("Id único de identificação de uma categoria.", Required = true)] int id
     )
     {
         var result = await _categoryService.GetByIdAsync(id);

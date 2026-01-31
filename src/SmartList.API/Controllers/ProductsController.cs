@@ -54,7 +54,7 @@ public class ProductsController : BaseController
     {
         var result = await _productService.UpdateAsync(id, request);
 
-        return CreatedAtAction(nameof(Update), new { id = result.Id }, result);
+        return Ok(result);
     }
 
     [HttpDelete("{id:int}")]
@@ -73,7 +73,7 @@ public class ProductsController : BaseController
     {
         var result = await _productService.RemoveAsync(id);
 
-        return CreatedAtAction(nameof(Remove), new { id = result.Id }, result);
+        return Ok(result);
     }
 
     [HttpGet]
@@ -94,7 +94,7 @@ public class ProductsController : BaseController
 
         var result = await _productService.GetAllAsync(filter);
 
-        return CreatedAtAction(nameof(List), result);
+        return Ok(result);
     }
 
     [HttpGet("{id:int}")]
@@ -108,11 +108,11 @@ public class ProductsController : BaseController
     [SwaggerResponse(404, "Produto não encontrado ou o Id fornecido não pertence ao usuário.", typeof(ErrorResponse))]
     [SwaggerResponse(401, "Usuário não autenticado.", typeof(ErrorResponse))]
     public async Task<IActionResult> GetById(
-        [FromQuery, SwaggerParameter("Id único de identificação de um produto.", Required = true)] int id
+        [FromRoute, SwaggerParameter("Id único de identificação de um produto.", Required = true)] int id
     )
     {
         var result = await _productService.GetByIdAsync(id);
 
-        return CreatedAtAction(nameof(GetById), result);
+        return Ok(result);
     }
 }
