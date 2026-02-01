@@ -36,7 +36,7 @@ public class UsersController : BaseController
     {
         var result = await _userService.AddAsync(request);
 
-        return CreatedAtAction(nameof(Register), new { id = result.Id }, result);
+        return CreatedAtAction(nameof(Register), result);
     }
 
     [AllowAnonymous]
@@ -56,7 +56,7 @@ public class UsersController : BaseController
     {
         var result = await _userService.ChangePasswordAsync(request);
 
-        return CreatedAtAction(nameof(ChangePassword), result);
+        return Ok(result);
     }
 
     [HttpPut("{id:int}")]
@@ -75,7 +75,7 @@ public class UsersController : BaseController
     {
         var result = await _userService.UpdateAsync(id, request);
 
-        return CreatedAtAction(nameof(Update), new { id = result.Id }, result);
+        return Ok(result);
     }
 
     [Authorize(Roles = "Admin")]
@@ -94,7 +94,7 @@ public class UsersController : BaseController
     {
         var result = await _userService.RemoveAsync(id);
 
-        return CreatedAtAction(nameof(Remove), new { id = result.Id }, result);
+        return Ok(result);
     }
 
     [Authorize(Roles = "Admin")]
@@ -115,7 +115,7 @@ public class UsersController : BaseController
 
         var result = await _userService.GetAllAsync(filter);
 
-        return CreatedAtAction(nameof(List), result);
+        return Ok(result);
     }
 
     [Authorize(Roles = "Admin")]
@@ -134,6 +134,6 @@ public class UsersController : BaseController
     {
         var result = await _userService.GetByIdAsync(id);
 
-        return CreatedAtAction(nameof(GetById), result);
+        return Ok(result);
     }
 }

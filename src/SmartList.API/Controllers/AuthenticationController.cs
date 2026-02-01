@@ -36,6 +36,6 @@ public class AuthenticationController : BaseController
     {
         var result = await _userService.AuthenticateAsync(request);
 
-        return CreatedAtAction(nameof(Login), new { id = result.Username }, result);
+        return Ok(result);
     }
 }

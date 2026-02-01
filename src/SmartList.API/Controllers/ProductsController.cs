@@ -34,7 +34,7 @@ public class ProductsController : BaseController
     {
         var result = await _productService.AddAsync(request);
 
-        return CreatedAtAction(nameof(Create), new { id = result.Id }, result);
+        return CreatedAtAction(nameof(Create), result);
     }
 
     [HttpPut("{id:int}")]

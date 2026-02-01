@@ -34,7 +34,7 @@ public class CategoriesController : BaseController
     {
         var result = await _categoryService.AddAsync(request);
 
-        return CreatedAtAction(nameof(Create), new { id = result.Id }, result);
+        return CreatedAtAction(nameof(Create), result);
     }
 
     [HttpPut("{id:int}")]
@@ -44,7 +44,7 @@ public class CategoriesController : BaseController
         OperationId = "CategoriesUpdate",
         Tags = ["Categories"]
     )]
-    [SwaggerResponse(204, "Categoria atualizada com sucesso.", typeof(CategoryResponse))]
+    [SwaggerResponse(200, "Categoria atualizada com sucesso.", typeof(CategoryResponse))]
     [SwaggerResponse(400, "Dados inválidos ou novo nome já em uso.", typeof(ErrorResponse))]
     [SwaggerResponse(404, "Categoria não encontrada ou não pertence ao usuário.", typeof(ErrorResponse))]
     public async Task<IActionResult> Update(
@@ -54,7 +54,7 @@ public class CategoriesController : BaseController
     {
         var result = await _categoryService.UpdateAsync(id, request);
 
-        return CreatedAtAction(nameof(Update), new { id = result.Id }, result);
+        return Ok(result);
     }
 
     [HttpDelete("{id:int}")]
@@ -64,7 +64,7 @@ public class CategoriesController : BaseController
         OperationId = "CategoriesDelete",
         Tags = ["Categories"]
     )]
-    [SwaggerResponse(204, "Categoria removida com sucesso.", typeof(CategoryResponse))]
+    [SwaggerResponse(200, "Categoria removida com sucesso.", typeof(CategoryResponse))]
     [SwaggerResponse(404, "Categoria não encontrada ou já removida.", typeof(ErrorResponse))]
     [SwaggerResponse(401, "Usuário não autenticado.", typeof(ErrorResponse))]
     public async Task<IActionResult> Remove(
@@ -73,7 +73,7 @@ public class CategoriesController : BaseController
     {
         var result = await _categoryService.RemoveAsync(id);
 
-        return CreatedAtAction(nameof(Remove), new { id = result.Id }, result);
+        return Ok(result);
     }
 
     [HttpGet]
@@ -93,7 +93,7 @@ public class CategoriesController : BaseController
 
         var result = await _categoryService.GetAllAsync(filter);
 
-        return CreatedAtAction(nameof(List), result);
+        return Ok(result);
     }
 
     [HttpGet("{id:int}")]
@@ -111,6 +111,6 @@ public class CategoriesController : BaseController
     {
         var result = await _categoryService.GetByIdAsync(id);
 
-        return CreatedAtAction(nameof(GetById), result);
+        return Ok(result);
     }
 }
