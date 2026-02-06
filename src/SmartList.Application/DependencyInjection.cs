@@ -33,6 +33,8 @@ public static class DependencyInjection
             cfg.AddMaps(typeof(UserMappingProfile).Assembly);
             cfg.AddMaps(typeof(CategoryMappingProfile).Assembly);
             cfg.AddMaps(typeof(ProductMappingProfile).Assembly);
+            cfg.AddMaps(typeof(ShoppingListMappingProfile).Assembly);
+            cfg.AddMaps(typeof(ShoppingListItemMappingProfile).Assembly);
         });
 
         return services;
@@ -59,6 +61,8 @@ public static class DependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IShoppingListService, ShoppingListService>();
+        services.AddScoped<IShoppingListItemService, ShoppingListItemService>();
 
         return services;
     }

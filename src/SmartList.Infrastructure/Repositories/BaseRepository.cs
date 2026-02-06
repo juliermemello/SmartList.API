@@ -82,4 +82,32 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
             .ProjectTo<T>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync<T>(x => x.Id == id);
     }
+
+    public virtual async Task<(IEnumerable<T> data, int total)> GetPagedAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        Expression<Func<T, object>>? orderBy = null,
+        int pageNumber = 1,
+        int pageSize = 10)
+    {
+        var query = _dbSet
+            .AsNoTracking()
+            .ProjectTo<T>(_mapper.ConfigurationProvider);
+
+        if (predicate is not null)
+            query = query.Where(predicate);
+
+        int total = await query.CountAsync();
+
+        if (orderBy is not null)
+            query = query.OrderBy(orderBy);
+        else
+            query = query.OrderByDescending(x => x.Id);
+
+        var data = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (data, total);
+    }
 }

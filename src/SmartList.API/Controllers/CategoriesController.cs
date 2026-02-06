@@ -113,4 +113,31 @@ public class CategoriesController : BaseController
 
         return Ok(result);
     }
+
+    [HttpGet("paged")]
+    [SwaggerOperation(
+        Summary = "Lista as categorias do usuário com paginação e filtros.",
+        Description = "Recupera uma coleção paginada de categorias. Permite filtrar, ordenar e controlar o tamanho da página.",
+        OperationId = "CategoriesPaged",
+        Tags = ["Categories"]
+    )]
+    [SwaggerResponse(200, "Página de categorias recuperada com sucesso.", typeof(PagedResponse<CategoryResponse>))]
+    [SwaggerResponse(400, "Parâmetros de paginação ou filtro inválidos.", typeof(ErrorResponse))]
+    public async Task<IActionResult> Paged(
+        [FromQuery, SwaggerParameter("Filtros para refinar a listagem.", Required = false)] CategoryFilterRequest? request,
+        [FromQuery, SwaggerParameter("Número da página.", Required = false)] int? pageNumber = 1,
+        [FromQuery, SwaggerParameter("Tamanho da página.", Required = false)] int? pageSize = 10
+    )
+    {
+        var filter = _categoryService.GetDynamicFilter(request);
+
+        var result = await _categoryService.GetPagedAsync(
+            filter,
+            x => x.Name,
+            pageNumber ?? 1,
+            pageSize ?? 10
+        );
+
+        return Ok(result);
+    }
 }

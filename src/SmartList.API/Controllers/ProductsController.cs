@@ -115,4 +115,31 @@ public class ProductsController : BaseController
 
         return Ok(result);
     }
+
+    [HttpGet("paged")]
+    [SwaggerOperation(
+        Summary = "Lista os produtos do usuário com paginação e filtros.",
+        Description = "Recupera uma coleção paginada de produtos. Permite filtrar, ordenar e controlar o tamanho da página.",
+        OperationId = "ProductsPaged",
+        Tags = ["Products"]
+    )]
+    [SwaggerResponse(200, "Página de produtos recuperada com sucesso.", typeof(PagedResponse<ProductResponse>))]
+    [SwaggerResponse(400, "Parâmetros de paginação ou filtro inválidos.", typeof(ErrorResponse))]
+    public async Task<IActionResult> Paged(
+        [FromQuery, SwaggerParameter("Filtros para refinar a listagem.", Required = false)] ProductFilterRequest? request,
+        [FromQuery, SwaggerParameter("Número da página.", Required = false)] int? pageNumber = 1,
+        [FromQuery, SwaggerParameter("Tamanho da página.", Required = false)] int? pageSize = 10
+    )
+    {
+        var filter = _productService.GetDynamicFilter(request);
+
+        var result = await _productService.GetPagedAsync(
+            filter,
+            x => x.Name,
+            pageNumber ?? 1,
+            pageSize ?? 10
+        );
+
+        return Ok(result);
+    }
 }

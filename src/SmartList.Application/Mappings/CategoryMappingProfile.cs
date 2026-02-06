@@ -13,8 +13,6 @@ public class CategoryMappingProfile : Profile
         CreateMap<Category, CategoryResponse>()
             .ForMember(dest => dest.TotalProducts, opt => opt.MapFrom(src => src.Products.Count));
 
-        CreateMap<CategoryCreateRequest, Category>();
-
         CreateMap<CategoryUpdateRequest, Category>()
             .ReverseMap();
 

@@ -16,4 +16,10 @@ public interface IBaseRepository<T> where T : BaseEntity
     Task UpdateAsync(T entity);
 
     Task DeleteAsync(T entity);
+
+    Task<(IEnumerable<T> data, int total)> GetPagedAsync(
+        Expression<Func<T, bool>>? predicate = null,
+        Expression<Func<T, object>>? orderBy = null,
+        int pageNumber = 1,
+        int pageSize = 10);
 }

@@ -1,4 +1,5 @@
 ﻿using SmartList.Domain.Common;
+using SmartList.Domain.Models;
 using System.Linq.Expressions;
 
 namespace SmartList.Application.Interfaces;
@@ -18,4 +19,10 @@ public interface IBaseService<TEntity, TRequest, TUpdateRequest, TResponse>
     Task<TResponse> UpdateAsync(int id, TUpdateRequest request);
     
     Task<TResponse> RemoveAsync(int id);
+
+    Task<PagedResponse<TResponse>> GetPagedAsync(
+        Expression<Func<TEntity, bool>>? predicate = null,
+        Expression<Func<TEntity, object>>? orderBy = null,
+        int pageNumber = 1,
+        int pageSize = 10);
 }

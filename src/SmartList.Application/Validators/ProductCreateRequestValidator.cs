@@ -20,7 +20,7 @@ public class ProductCreateRequestValidator : AbstractValidator<ProductCreateRequ
 
         RuleFor(x => x.CategoryId)
             .GreaterThan(0).WithMessage("A categoria é obrigatória.")
-            .MustAsync(CategoryExists).WithMessage("A categoria informada não existe ou não pertence ao seu usuário."); ;
+            .MustAsync(CategoryExists).WithMessage("A categoria informada não existe ou não pertence ao seu usuário.");
     }
 
     private async Task<bool> BeUniqueName(string name, CancellationToken cancellationToken)

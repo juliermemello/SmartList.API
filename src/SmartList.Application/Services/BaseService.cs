@@ -4,6 +4,7 @@ using FluentValidation;
 using SmartList.Application.Interfaces;
 using SmartList.Domain.Common;
 using SmartList.Domain.Interfaces.Repositories;
+using SmartList.Domain.Models;
 using System.Linq.Expressions;
 
 namespace SmartList.Application.Services;
@@ -41,6 +42,9 @@ public class BaseService<TEntity, TRequest, TUpdateRequest, TResponse> : IBaseSe
     public virtual async Task<TResponse?> GetByIdAsync(int id)
     {
         var entity = await _uow.Repository<TEntity>().GetByIdAsync(id);
+
+        if (entity == null)
+            throw new Exception("Registro não encontrado.");
 
         return _mapper.Map<TResponse>(entity);
     }
@@ -92,5 +96,18 @@ public class BaseService<TEntity, TRequest, TUpdateRequest, TResponse> : IBaseSe
         await _uow.Repository<TEntity>().DeleteAsync(entity);
 
         return _mapper.Map<TResponse>(entity);
+    }
+
+    public virtual async Task<PagedResponse<TResponse>> GetPagedAsync(
+        Expression<Func<TEntity, bool>>? predicate = null,
+        Expression<Func<TEntity, object>>? orderBy = null,
+        int pageNumber = 1,
+        int pageSize = 10)
+    {
+        var (entities, totalRecords) = await _uow.Repository<TEntity>().GetPagedAsync(predicate, orderBy, pageNumber, pageSize);
+
+        var dtos = _mapper.Map<IEnumerable<TResponse>>(entities);
+
+        return new PagedResponse<TResponse>(dtos, pageNumber, pageSize, totalRecords);
     }
 }
