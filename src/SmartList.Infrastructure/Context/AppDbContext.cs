@@ -94,12 +94,17 @@ public class AppDbContext : DbContext
         if (userId == null) 
             return;
 
+        if (!ChangeTracker.Entries<BaseUserIdEntity>().Any())
+            return;
+
         foreach (var entry in ChangeTracker.Entries<BaseUserIdEntity>())
         {
             switch (entry.State)
             {
                 case EntityState.Added:
-                    entry.Entity.UserId = userId.Value;
+                    if (entry.Entity.UserId == 0)
+                        entry.Entity.UserId = userId.Value;
+
                     break;
                 case EntityState.Modified:
                     entry.Property(x => x.UserId).IsModified = false;

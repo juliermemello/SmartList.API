@@ -50,14 +50,41 @@ public class UserService : BaseService<User, UserCreateRequest, UserUpdateReques
         entity.Role = UserRole.User.ToString();
         entity.Password = _passwordHasher.Hash(request.Password);
 
-        entity.Categories = DefaultData.Categories.Select(name => new Category
-        {
-            Name = name,
-            Deleted = false
-        }).ToList();
-
         await _uow.Users.AddAsync(entity);
-        await _uow.CommitAsync(default);
+
+        var userSaved = await _uow.CommitAsync(default);
+
+        if (!userSaved)
+            throw new Exception("Um erro ocorreu ao tentar criar um novo usuário.");
+
+        if (entity.Id > 0)
+        {
+            foreach (var categoryName in DefaultData.Categories)
+            {
+                var category = await _uow.Categories.AddAsync(new Category
+                {
+                    Name = categoryName,
+                    UserId = entity.Id
+                });
+
+                await _uow.CommitAsync(default);
+
+                if (!DefaultData.Catalog.TryGetValue(category.Name, out List<string>? products))
+                    continue;
+
+                foreach (var product in products)
+                {
+                    await _uow.Products.AddAsync(new Product
+                    {
+                        Name = product,
+                        CategoryId = category.Id,
+                        UserId = entity.Id
+                    });
+
+                    await _uow.CommitAsync(default);
+                }
+            }
+        }
 
         return _mapper.Map<UserResponse>(entity);
     }

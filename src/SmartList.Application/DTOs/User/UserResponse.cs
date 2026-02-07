@@ -8,8 +8,9 @@ public class UserResponse
     public string Email { get; init; } = string.Empty;
     public string Role { get; init; } = string.Empty;
     public bool Active { get; init; }
-    public int TotalLists { get; init; }
+    public int TotalCategories { get; init; }
     public int TotalProducts { get; init; }
+    public int TotalLists { get; init; }
     public DateTime? CreatedAt { get; init; } = null;
     public DateTime? UpdatedAt { get; init; } = null;
 }

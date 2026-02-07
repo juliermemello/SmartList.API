@@ -12,7 +12,8 @@ public class UserMappingProfile : Profile
 
         CreateMap<User, UserResponse>()
             .ForMember(dest => dest.TotalLists, opt => opt.MapFrom(src => src.Lists.Count))
-            .ForMember(dest => dest.TotalProducts, opt => opt.MapFrom(src => src.Products.Count));
+            .ForMember(dest => dest.TotalProducts, opt => opt.MapFrom(src => src.Products.Count))
+            .ForMember(dest => dest.TotalCategories, opt => opt.MapFrom(src => src.Categories.Count));
 
         CreateMap<UserCreateRequest, User>();
 
