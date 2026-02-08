@@ -63,6 +63,7 @@ public static class DependencyInjection
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IShoppingListService, ShoppingListService>();
         services.AddScoped<IShoppingListItemService, ShoppingListItemService>();
+        services.AddScoped<IDashboardService, DashboardService>();
 
         return services;
     }
